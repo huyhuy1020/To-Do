@@ -1,23 +1,24 @@
-package handler
+package api
 
 import (
 	"net/http"
+	"todo/database"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/render"
-	"gitlab.com/idoko/bucketeer/db"
 )
 
-var dbInstance db.Database
+var dbInstance database.Database
 
-func NewHandler(db db.Database) http.Handler {
+func NewHandler(db database.Database) http.Handler {
 	router := chi.NewRouter()
 	dbInstance = db
 	router.MethodNotAllowed(methodNotAllowedHandler)
 	router.NotFound(notFoundHandler)
-	router.Route("/Employee", Employee)
+	router.Route("/employee", Employee)
 	return router
 }
+
 func methodNotAllowedHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/json")
 	w.WriteHeader(405)
