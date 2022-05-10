@@ -35,7 +35,7 @@ func AddEmploy(db database.Database, emp *models.Employee) error {
 	return nil
 }
 
-func GetEmployeeById(db database.Database, empId int) (models.Employee, error) {
+func RetrieveEmployeeById(db database.Database, empId int) (models.Employee, error) {
 	emp := models.Employee{}
 	query := `SELECT * FROM Employee WHERE emoloyee_id = $1;`
 	row := db.Conn.QueryRow(query, empId)

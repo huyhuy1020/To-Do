@@ -38,27 +38,22 @@ func AddEmployee(db database.Database) error {
 	return err
 }
 
-func GetEmployeeByEmployee_Id(db database.Database) ([]EmployeeResquests, error) {
-	employees1, err := employee.GetEmployeeById(db)
-	resp := translateToGetID(employees1)
+func GetEmployeeByID(db database.Database, id int) (EmployeeResponses, error) {
+	employee, err := employee.RetrieveEmployeeById(db, id)
+	resp := translateToGetID(employee)
 	if err != nil {
-		return nil, err
+		return EmployeeResponses{}, err
 	}
 
 	return resp, nil
 }
 
-func translateToGetID(employees []models.EmployeeRequest) []EmployeeResquests {
-	emp := []EmployeeResquests{}
-	for _, employee := range employees {
-		empreq := models.EmployeeRequest{
-			ID:    employee.ID,
-			Name:  employee.Name,
-			Email: employee.Email,
-		}
-		emp = append(emp, EmployeeResquests(empreq))
+func translateToGetID(employee models.Employee) EmployeeResponses {
+	return EmployeeResponses{
+		ID:    employee.ID,
+		Email: employee.Email,
+		Name:  employee.Name,
 	}
-	return emp
 }
 
 func DeleteEmployees(db database.Database) ([]EmployeeResponses, error) {
