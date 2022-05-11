@@ -5,7 +5,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net"
 	"net/http"
+	"todo/cmd/router/api"
+	"todo/database"
 
 	_ "github.com/lib/pq"
 )
@@ -91,7 +94,22 @@ func PostByEmployeeID(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	http.HandleFunc("/", GetTaskByEmployeeID)
-	http.HandleFunc("/insert", PostByEmployeeID)
-	log.Fatal(http.ListenAndServe(":8888", nil))
+	addr := ":8080"
+	listener, err := net.Listen("tcp", addr)
+	if err != nil {
+		log.Fatalf("Error occurred: %s", err.Error())
+	}
+
+	database, err := database.Initialize("bucketeer", "bucketeer_pass", "bucketeer_db")
+	if err != nil {
+		log.Fatalf("Could not set up database: %v", err)
+	}
+	defer database.Conn.Close()
+
+	httpHandler := api.NewHandler(database)
+	server := &http.Server{
+		Handler: httpHandler,
+	}
+
+	server.Serve(listener)
 }
