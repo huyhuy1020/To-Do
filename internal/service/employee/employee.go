@@ -56,20 +56,11 @@ func translateToGetID(employee models.Employee) EmployeeResponses {
 	}
 }
 
-func DeleteEmployees(db database.Database) ([]EmployeeResponses, error) {
-	employees, err := employee.DeleteEmployee(db)
-	resp := translateToEmployeeResp(employees)
+func DeleteEmployees(db database.Database, id int) error {
+	emp := employee.DeleteEmployee(db, id)
+	err := emp
 	if err != nil {
-		return nil, err
+		return nil
 	}
-	return resp, nil
-}
-
-func updateEmp(db database.Database) ([]EmployeeResponses, error) {
-	employees, err := employee.updateEmployee(db)
-	resp := translateToEmployeeResp(employees)
-	if err != nil {
-		return nil, err
-	}
-	return resp, nil
+	return err
 }

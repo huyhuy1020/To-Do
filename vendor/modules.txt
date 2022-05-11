@@ -9,3 +9,7 @@ github.com/go-chi/render
 github.com/lib/pq
 github.com/lib/pq/oid
 github.com/lib/pq/scram
+# gitlab.com/idoko/bucketeer v0.0.0-20200726161327-fd1c0976dd82
+## explicit; go 1.14
+gitlab.com/idoko/bucketeer/db
+gitlab.com/idoko/bucketeer/models

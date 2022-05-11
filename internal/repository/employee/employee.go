@@ -58,7 +58,7 @@ func DeleteEmployee(db database.Database, empId int) error {
 	}
 
 }
-func updateEmployee(db database.Database, empId int, empData models.Employee) (models.Employee, error) {
+func updateEmployees(db database.Database, empId int, empData models.Employee) (models.Employee, error) {
 	employee := models.Employee{}
 	query := `UPDATE Employee SET name=$1, email=$2 WHERE employee_id=$3 RETURNING employee_id, name, description;`
 	err := db.Conn.QueryRow(query, empData.Name, empData.Email, empId).Scan(&employee.ID, &employee.Name, &employee.Email)

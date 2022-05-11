@@ -117,13 +117,13 @@ func updateEmployee(w http.ResponseWriter, r *http.Request) {
 		render.Render(w, r, ErrBadRequest)
 		return
 	}
-	item, err := employeeService.u
+	item, err := employeeService.updateEmployees(empID)
 }
 
 func deleteEmployee(w http.ResponseWriter, r *http.Request) {
 	// handle logic here
 	empmID := r.Context().Value(EmployeeID).(int)
-	err := employeeService.DeleteEmployees(dbInstance)
+	_, err := employeeService.DeleteEmployees(dbInstance, empmID)
 	if err != nil {
 		if err == employeeService.ErrNoMatch(empmID) {
 			render.Render(w, r, ErrNotFound)
