@@ -31,7 +31,7 @@ func translateToEmployeeResp(employees []models.Employee) []EmployeeResponses {
 }
 
 func AddEmployee(db database.Database) error {
-	err := AddEmployee(db)
+	err := employee.AddEmploy(db, &models.Employee{})
 	if err != nil {
 		return nil
 	}
@@ -59,6 +59,14 @@ func translateToGetID(employee models.Employee) EmployeeResponses {
 func DeleteEmployees(db database.Database, id int) error {
 	emp := employee.DeleteEmployee(db, id)
 	err := emp
+	if err != nil {
+		return nil
+	}
+	return err
+}
+
+func updateEmp(db database.Database, id int) error {
+	err := employee.updateEmployees(db, id, models.Employee{})
 	if err != nil {
 		return nil
 	}

@@ -117,7 +117,7 @@ func updateEmployee(w http.ResponseWriter, r *http.Request) {
 		render.Render(w, r, ErrBadRequest)
 		return
 	}
-	item, err := employeeService.updateEmployees(empID)
+	item, err := employeeService.updateEmp(empID)
 }
 
 func deleteEmployee(w http.ResponseWriter, r *http.Request) {
