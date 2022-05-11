@@ -109,6 +109,8 @@ func getEmployee(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, http.StatusOK, resp)
 }
 
+//Also in here render.Bind method(the error annouce that I am missing a Bind method,what is a Bind method)
+//However, Could you give me any instructions? I am quitely ambigous in this updateEmployee for how to run it sucessfully
 func updateEmployee(w http.ResponseWriter, r *http.Request) {
 	// handle logic here
 	empID := r.Context().Value(EmployeeID).(int)
@@ -117,13 +119,16 @@ func updateEmployee(w http.ResponseWriter, r *http.Request) {
 		render.Render(w, r, ErrBadRequest)
 		return
 	}
-	item, err := employeeService.updateEmp(empID)
+	items, err := employeeService.updateEmp(empID)
+
 }
 
+// in this functuion. There is a problem at employeeService.ErrorMatch. There is not any function ErrorMatch in there. So what does function ErrorMatch use for?
+// Could you give me instructions in here?
 func deleteEmployee(w http.ResponseWriter, r *http.Request) {
 	// handle logic here
 	empmID := r.Context().Value(EmployeeID).(int)
-	_, err := employeeService.DeleteEmployees(dbInstance, empmID)
+	err := employeeService.DeleteEmployees(dbInstance, empmID)
 	if err != nil {
 		if err == employeeService.ErrNoMatch(empmID) {
 			render.Render(w, r, ErrNotFound)
