@@ -147,5 +147,8 @@ func deleteEmployee(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	response.JSON(w, http.StatusOK, nil)
+	deleteEmployeeResponse := DeleteEmployeeResponse{
+		Status: "success",
+	}
+	response.JSON(w, http.StatusOK, deleteEmployeeResponse)
 }
