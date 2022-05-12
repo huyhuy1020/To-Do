@@ -48,7 +48,7 @@ func RetrieveEmployeeById(db database.Database, empId int) (models.Employee, err
 }
 
 func DeleteEmployee(db database.Database, empId int) error {
-	query := `DELETE FROM Employee WHERE employee_id = $1`
+	query := `DELETE FROM Employee WHERE employee_id = $1;`
 	_, err := db.Conn.Exec(query, empId)
 	switch err {
 	case sql.ErrNoRows:
@@ -58,7 +58,8 @@ func DeleteEmployee(db database.Database, empId int) error {
 	}
 
 }
-func updateEmployees(db database.Database, empId int, empData models.Employee) (models.Employee, error) {
+
+func UpdateEmployee(db database.Database, empId int, empData models.Employee) (models.Employee, error) {
 	employee := models.Employee{}
 	query := `UPDATE Employee SET name=$1, email=$2 WHERE employee_id=$3 RETURNING employee_id, name, description;`
 	err := db.Conn.QueryRow(query, empData.Name, empData.Email, empId).Scan(&employee.ID, &employee.Name, &employee.Email)

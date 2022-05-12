@@ -8,27 +8,20 @@ import (
 	"net/http"
 	"strconv"
 
-	"todo/internal/models"
 	response "todo/internal/responses"
 	employeeService "todo/internal/service/employee"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/render"
+	"gitlab.com/idoko/bucketeer/db"
 )
 
 var (
 	EmployeeID = "EmpmID"
-	itemIDKey  = "itemID"
 )
 
-func Employee(router chi.Router) {
-	router.Get("/", getAllEmployees)
-	router.Post("/", createEmployee)
-	router.Route("/{id}", func(router chi.Router) {
-		router.Get("/detail", getEmployee)
-		router.Put("/update", updateEmployee)
-		router.Delete("/delete", deleteEmployee)
-	})
+type DeleteEmployeeResponse struct {
+	Status string `json:"status"`
 }
 
 func getAllEmployees(w http.ResponseWriter, r *http.Request) {
@@ -87,7 +80,6 @@ func Addition(employees []employeeService.EmployeeResponses) EmployeeResponses {
 }
 
 func getEmployee(w http.ResponseWriter, r *http.Request) {
-	// handle logic here
 	empid := chi.URLParam(r, "id")
 	if empid == "" {
 		render.Render(w, r, ServerErrorRenderer(errors.New("id is empty")))
@@ -109,32 +101,51 @@ func getEmployee(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, http.StatusOK, resp)
 }
 
-//Also in here render.Bind method(the error annouce that I am missing a Bind method,what is a Bind method)
-//However, Could you give me any instructions? I am quitely ambigous in this updateEmployee for how to run it sucessfully
 func updateEmployee(w http.ResponseWriter, r *http.Request) {
-	// handle logic here
-	empID := r.Context().Value(EmployeeID).(int)
-	empData := models.Employee{}
-	if err := render.Bind(r, &empData); err != nil {
-		render.Render(w, r, ErrBadRequest)
+	empid := chi.URLParam(r, "id")
+	if empid == "" {
+		render.Render(w, r, ServerErrorRenderer(errors.New("id is empty")))
 		return
 	}
-	items, err := employeeService.updateEmp(empID)
 
+	parseId, err := strconv.Atoi(empid)
+	if err != nil {
+		render.Render(w, r, ServerErrorRenderer(errors.New("id parse failed")))
+		return
+	}
+
+	resp, err := employeeService.UpdateEmployee(dbInstance, parseId)
+	if err != nil {
+		render.Render(w, r, ErrorRenderer(err))
+		return
+	}
+
+	response.JSON(w, http.StatusOK, resp)
 }
 
 // in this functuion. There is a problem at employeeService.ErrorMatch. There is not any function ErrorMatch in there. So what does function ErrorMatch use for?
 // Could you give me instructions in here?
 func deleteEmployee(w http.ResponseWriter, r *http.Request) {
-	// handle logic here
-	empmID := r.Context().Value(EmployeeID).(int)
-	err := employeeService.DeleteEmployees(dbInstance, empmID)
+	empid := chi.URLParam(r, "id")
+	if empid == "" {
+		render.Render(w, r, ServerErrorRenderer(errors.New("id is empty")))
+		return
+	}
+
+	parseId, err := strconv.Atoi(empid)
 	if err != nil {
-		if err == employeeService.ErrNoMatch(empmID) {
+		render.Render(w, r, ServerErrorRenderer(errors.New("id parse failed")))
+		return
+	}
+
+	err = employeeService.DeleteEmployees(dbInstance, parseId)
+	if err != nil {
+		if err == db.ErrNoMatch {
 			render.Render(w, r, ErrNotFound)
 		} else {
 			render.Render(w, r, ServerErrorRenderer(err))
 		}
 	}
-	return
+
+	response.JSON(w, http.StatusOK, nil)
 }

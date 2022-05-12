@@ -19,6 +19,16 @@ func NewHandler(db database.Database) http.Handler {
 	return router
 }
 
+func Employee(router chi.Router) {
+	router.Get("/", getAllEmployees)
+	router.Post("/", createEmployee)
+	router.Route("/{id}", func(router chi.Router) {
+		router.Get("/detail", getEmployee)
+		router.Put("/update", updateEmployee)
+		router.Delete("/delete", deleteEmployee)
+	})
+}
+
 func methodNotAllowedHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/json")
 	w.WriteHeader(405)
